@@ -1,0 +1,28 @@
+.form {
+  margin-bottom: 15px;
+}
+
+.input {
+  margin-right: 10px;
+  padding: 10px;
+
+  font-family: Roboto, sans-serif;
+  font-size: 16px;
+}
+
+.btn {
+  padding: 10px;
+
+  font-family: Roboto, sans-serif;
+  font-size: 18px;
+
+  border: none;
+  border-radius: 5px;
+
+  transition: background-color 250ms ease;
+}
+
+.btn:hover,
+.btn:focus {
+  background-color: rgb(243, 166, 23);
+}
