@@ -1,0 +1,7 @@
+.Appbar-slideIn-appear {
+  transform: translateX(-100%);
+}
+.Appbar-slideIn-appear-active {
+  transform: translateX(0);
+  transition: transform 500ms ease-in-out;
+}

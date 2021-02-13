@@ -88,7 +88,7 @@ export default class App extends Component {
         <Section title="Phonebook">
           <ContactForm onSubmit={this.addContact} />
         </Section>
-        <Section title="Contacts">
+        <Section>
           <Filter value={filter} onChange={this.handleFilterInput} />
           <ContactList
             contacts={this.handleFilter()}
