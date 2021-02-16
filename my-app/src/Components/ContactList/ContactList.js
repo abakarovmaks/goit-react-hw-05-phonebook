@@ -1,38 +1,45 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Contact from '../Contact/Contact';
+// import Contact from '../Contact/Contact';
 import styles from './ContactList.module.css';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import '../Section/Fade.css';
 
-export default function ContactList({ contacts, deleteHandler }) {
+export default function ContactList({ contacts, onDelete }) {
   return (
-    <ul className={styles.list}>
-      {contacts.map(({ id, name, number }) =>
-        Contact({
-          id,
-          name,
-          number,
-          deleteHandler,
-        })
-      )}
-    </ul>
+    <TransitionGroup component="ul" className={styles.list}>
+      {contacts.map(({ id, name, number }) => (
+        <CSSTransition
+          key={id}
+          timeout={500}
+          classNames="List-slideIn"
+          unmountOnExit
+        >
+          <li className={styles.contact}>
+            <span className={styles.name}>{name}</span>
+            <span className={styles.number}>{number}</span>
+            <button
+              className={styles.btn}
+              onClick={() => {
+                onDelete(id);
+              }}
+            >
+              Delete
+            </button>
+          </li>
+        </CSSTransition>
+      ))}
+    </TransitionGroup>
   );
 }
-
-ContactList.defaultProps = {
-  contacts: PropTypes.arrayOf(
-    PropTypes.exact({
-      name: 'Name',
-      number: '+380',
-    })
-  ),
-};
 
 ContactList.propTypes = {
   contacts: PropTypes.arrayOf(
     PropTypes.exact({
       id: PropTypes.string.isRequired,
-      name: PropTypes.string,
-      number: PropTypes.string,
-    })
+      name: PropTypes.string.isRequired,
+      number: PropTypes.string.isRequired,
+    }).isRequired
   ),
+  onDelete: PropTypes.func.isRequired,
 };

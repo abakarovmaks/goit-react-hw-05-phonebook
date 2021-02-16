@@ -69,15 +69,14 @@ export default class App extends Component {
       : contacts;
   }
 
-  deleteContact = (e) => {
-    const deletedId = e.currentTarget.dataset.id;
-
-    this.setState((prevState) => ({
-      contacts: prevState.contacts.filter(
-        (contact) => contact.id !== deletedId
-      ),
-    }));
-    e.currentTarget.blur();
+  onDelete = (id) => {
+    this.setState((prevState) => {
+      return {
+        contacts: [
+          ...prevState.contacts.filter((contact) => contact.id !== id),
+        ],
+      };
+    });
   };
 
   render() {
@@ -88,11 +87,12 @@ export default class App extends Component {
         <Section title="Phonebook">
           <ContactForm onSubmit={this.addContact} />
         </Section>
+
         <Section>
           <Filter value={filter} onChange={this.handleFilterInput} />
           <ContactList
             contacts={this.handleFilter()}
-            deleteHandler={this.deleteContact}
+            onDelete={this.onDelete}
           />
         </Section>
       </Container>

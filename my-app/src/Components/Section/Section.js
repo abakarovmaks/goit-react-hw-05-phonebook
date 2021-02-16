@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './Section.module.css';
 import { CSSTransition } from 'react-transition-group';
-import './AppBar.css';
+import './Fade.css';
 
 export default function Section({ title, children }) {
   return (
@@ -10,7 +10,7 @@ export default function Section({ title, children }) {
         in={true}
         appear={true}
         timeout={500}
-        classNames="Appbar-slideIn"
+        classNames="Title-slideIn"
         unmountOnExit
       >
         <p className={styles.title}>{title}</p>
