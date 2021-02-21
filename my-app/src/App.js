@@ -1,100 +1,113 @@
 import React, { Component } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import Container from './Components/Container/Container';
-import Section from './Components/Section/Section';
+import Title from './Components/Title/Title';
 import ContactForm from './Components/ContactForm/ContactForm';
 import ContactList from './Components/ContactList/ContactList';
 import Filter from './Components/Filter/Filter';
-
-const initialState = [
-  { id: 'id-1', name: 'Rosie Simpson', number: '+380 93 555 77 88' },
-  { id: 'id-2', name: 'Hermione Kline', number: '+380 67 442 74 98' },
-  { id: 'id-3', name: 'Eden Clements', number: '+380 63 005 71 84' },
-  { id: 'id-4', name: 'Annie Copeland', number: '+380 79 815 07 84' },
-];
+import Notification from './Components/Notification/Notification';
+import { CSSTransition } from 'react-transition-group';
 
 export default class App extends Component {
   state = {
-    contacts: initialState,
+    contacts: [],
     filter: '',
+    message: null,
   };
 
-  componentDidMount() {
-    const storageContacts = JSON.parse(localStorage.getItem('contacts'));
-    if (storageContacts) {
-      this.setState({ contacts: storageContacts });
-    }
-  }
-
-  componentDidUpdate() {
-    localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-  }
+  setMessage = (note) => {
+    this.setState({ message: note });
+    setTimeout(() => {
+      this.setState({ message: null });
+    }, 2500);
+  };
 
   addContact = (name, number) => {
-    const { contacts } = this.state;
-
-    const toLowerCase = (contact) =>
-      contact.name.toLowerCase() === name.toLowerCase();
-
-    const contactFind = contacts.find(toLowerCase);
-
-    if (contactFind) {
-      alert(`${name} is already in Phonebook`);
-      return;
-    }
-
-    const newContact = {
+    const contact = {
       id: uuidv4(),
       name,
       number,
     };
 
-    this.setState(({ contacts }) => ({
-      contacts: [...contacts, newContact],
-    }));
+    if (name === '') {
+      this.setMessage('Enter concact name, please!');
+      return;
+    }
+    if (number === '') {
+      this.setMessage('Enter concact phone, please!');
+      return;
+    }
+    if (
+      this.state.contacts.find(
+        (item) => item.name.toLowerCase() === name.toLowerCase()
+      )
+    ) {
+      this.setMessage('Contact already exists!');
+      return;
+    }
+    this.setState((prevState) => {
+      return { contacts: [...prevState.contacts, contact] };
+    });
   };
 
-  handleFilterInput = (e) => {
-    const filter = e.currentTarget.value;
-    this.setState({ filter });
-  };
-
-  handleFilter() {
-    const { contacts, filter } = this.state;
-
-    return filter
-      ? contacts.filter(({ name }) =>
-          name.toLocaleLowerCase().includes(filter.toLocaleLowerCase())
-        )
-      : contacts;
-  }
-
-  onDelete = (id) => {
+  deleteContact = (id) => {
     this.setState((prevState) => {
       return {
-        contacts: [
-          ...prevState.contacts.filter((contact) => contact.id !== id),
-        ],
+        contacts: prevState.contacts.filter((contact) => contact.id !== id),
       };
     });
   };
 
+  changeFilter = (filter) => {
+    this.setState({ filter });
+  };
+
+  getFilteredContactsList = () => {
+    const { contacts, filter } = this.state;
+    return contacts.filter((contact) =>
+      contact.name.toLowerCase().includes(filter.toLowerCase())
+    );
+  };
+
+  componentDidMount() {
+    const contacts = localStorage.getItem('contacts');
+    const parselContacts = JSON.parse(contacts);
+
+    if (parselContacts) {
+      this.setState({ contacts: parselContacts });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
+
   render() {
-    const { filter } = this.state;
+    const { contacts, filter, message } = this.state;
+    const filteredContactsList = this.getFilteredContactsList();
 
     return (
       <Container>
-        <Section title="Phonebook">
-          <ContactForm onSubmit={this.addContact} />
-        </Section>
+        <Title />
 
-        <Section>
-          <Filter value={filter} onChange={this.handleFilterInput} />
+        <Notification message={message} />
+
+        <ContactForm onAddContact={this.addContact} />
+
+        <Filter
+          value={filter}
+          onChange={this.changeFilter}
+          contacts={contacts}
+        />
+
+        <CSSTransition in={contacts.length > 0} timeout={0} ommountOnExit>
           <ContactList
-            contacts={this.handleFilter()}
-            onDelete={this.onDelete}
+            contacts={filteredContactsList}
+            onDelete={this.deleteContact}
           />
-        </Section>
+        </CSSTransition>
       </Container>
     );
   }

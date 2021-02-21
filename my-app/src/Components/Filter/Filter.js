@@ -1,24 +1,33 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styles from './Filter.module.css';
+import './Filter.css';
+import { CSSTransition } from 'react-transition-group';
 
-export default function Filter({ value, onChange }) {
+export default function Filter({ value, onChange, contacts }) {
   return (
-    <form className={styles.form}>
-      <label>
-        <span className={styles.title}>Find contacts by name</span>
-        <input
-          className={styles.input}
-          type="text"
-          value={value}
-          onChange={onChange}
-        ></input>
-      </label>
-    </form>
+    <CSSTransition
+      in={contacts.length > 1}
+      timeout={250}
+      classNames="Filter-fade"
+      unmountOnExit
+    >
+      <form className="form">
+        <label>
+          <span className="title">Find contacts by name</span>
+          <input
+            className="input"
+            type="text"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+          />
+        </label>
+      </form>
+    </CSSTransition>
   );
 }
 
 Filter.propTypes = {
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
+  contacts: PropTypes.arrayOf(PropTypes.object),
 };

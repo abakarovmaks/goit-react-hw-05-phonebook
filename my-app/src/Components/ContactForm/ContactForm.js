@@ -8,65 +8,61 @@ export default class ContactForm extends Component {
     number: '',
   };
 
-  handleSubmitForm = (event) => {
-    event.preventDefault();
-
-    const { name, number } = this.state;
-    const formRefs = event.currentTarget;
-    const trim = name.trim() === '' || number.trim() === '';
-
-    function clearFields() {
-      formRefs[formRefs.length - 1].blur();
-    }
-
-    if (trim) {
-      alert('Fill all fields!');
-      clearFields();
-      return;
-    }
-
-    this.props.onSubmit(name.trim(), number.trim());
-    this.setState({ name: '', number: '' });
-    clearFields();
+  static propTypes = {
+    onAddContact: PropTypes.func,
   };
 
-  handleChange = ({ currentTarget }) => {
-    this.setState({ [currentTarget.name]: currentTarget.value });
+  static defaultProps = {};
+
+  handleSubmitForm = (e) => {
+    const { name, number } = this.state;
+    e.preventDefault();
+
+    this.props.onAddContact(name, number);
+    this.setState({
+      name: '',
+      number: '',
+    });
+  };
+
+  handleChange = (e) => {
+    const { name, value } = e.target;
+    this.setState({
+      [name]: value,
+    });
   };
 
   render() {
     const { name, number } = this.state;
 
     return (
-      <form className={styles.form} onSubmit={this.handleSubmitForm}>
-        <label>
-          <input
-            className={styles.input}
-            type="text"
-            value={name}
-            name="name"
-            placeholder="Name"
-            onChange={this.handleChange}
-          />
-        </label>
-        <label>
-          <input
-            className={styles.input}
-            type="tel"
-            value={number}
-            name="number"
-            placeholder="+380"
-            onChange={this.handleChange}
-          />
+      <div className={styles.container}>
+        <form className={styles.form} onSubmit={this.handleSubmitForm}>
+          <label>
+            <input
+              className={styles.input}
+              type="text"
+              value={name}
+              name="name"
+              placeholder="Name"
+              onChange={this.handleChange}
+            />
+          </label>
+          <label>
+            <input
+              className={styles.input}
+              type="tel"
+              value={number}
+              name="number"
+              placeholder="+380"
+              onChange={this.handleChange}
+            />
+          </label>
           <button className={styles.btn} type="submit">
             Add contact
           </button>
-        </label>
-      </form>
+        </form>
+      </div>
     );
   }
 }
-
-ContactForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-};

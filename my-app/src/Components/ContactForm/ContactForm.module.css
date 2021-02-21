@@ -1,10 +1,11 @@
 .form {
-  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
 }
 
 .input {
-  margin-right: 10px;
-  padding: 10px;
+  margin-bottom: 15px;
+  width: 360px;
 
   font-family: Roboto, sans-serif;
   font-size: 16px;
@@ -25,4 +26,15 @@
 .btn:hover,
 .btn:focus {
   background-color: rgb(243, 166, 23);
+}
+
+.container {
+  background-color: rgb(205, 237, 252);
+  padding-top: 40px;
+  padding-bottom: 20px;
+  padding-left: 15px;
+  padding-right: 15px;
+
+  margin-bottom: 15px;
+  box-shadow: 0 3px 6px rgb(0 0 0 / 16%), 0 3px 6px rgb(0 0 0 / 23%);
 }

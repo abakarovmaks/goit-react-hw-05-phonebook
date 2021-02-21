@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// import Contact from '../Contact/Contact';
 import styles from './ContactList.module.css';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
-import '../Section/Fade.css';
+import '../Fade/Fade.css';
 
 export default function ContactList({ contacts, onDelete }) {
   return (
@@ -11,7 +10,7 @@ export default function ContactList({ contacts, onDelete }) {
       {contacts.map(({ id, name, number }) => (
         <CSSTransition
           key={id}
-          timeout={500}
+          timeout={250}
           classNames="List-slideIn"
           unmountOnExit
         >
@@ -23,6 +22,7 @@ export default function ContactList({ contacts, onDelete }) {
               onClick={() => {
                 onDelete(id);
               }}
+              aria-label="Удалить контакт"
             >
               Delete
             </button>
@@ -34,12 +34,6 @@ export default function ContactList({ contacts, onDelete }) {
 }
 
 ContactList.propTypes = {
-  contacts: PropTypes.arrayOf(
-    PropTypes.exact({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      number: PropTypes.string.isRequired,
-    }).isRequired
-  ),
-  onDelete: PropTypes.func.isRequired,
+  onDelete: PropTypes.func,
+  contacts: PropTypes.arrayOf(PropTypes.object),
 };
